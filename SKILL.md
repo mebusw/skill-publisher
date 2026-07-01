@@ -1,12 +1,12 @@
 ---
 name: skill-publisher
-description: Publish Agent Skills to clawhub.ai and skills.sh in one workflow. Use when the user wants to release, publish, ship, or distribute a SKILL.md-based skill — even if they don't say "publisher" explicitly. Triggers on phrases like "publish my skill", "release to clawhub", "submit to skills.sh", "发布skill", "上传skill", "上架skill", "ship to marketplace", "make my skill available", "auto-release", or any request to push a skill folder to multiple marketplaces. Generates skill-card.md and bilingual README, strips dot-files and credentials, drafts a release note, optionally invokes /skill-optimizer for description tweaks and /release-skill for version bumps, then drives `openclaw skills install @mebusw/<slug>` and `npx skills add https://github.com/mebusw/<slug>` end to end.
-skill-hint: "[--skip-optimizer] [--skip-release-skill] [--dry-run]"
+description: Publish Agent Skills to clawhub.ai and skills.sh in one workflow. Use when the user wants to release, publish, ship, or distribute a SKILL.md-based skill — even if they don't say "publisher" explicitly. Triggers on phrases like "publish my skill", "release to clawhub", "submit to skills.sh", "发布skill", "上传skill", "上架skill", "ship to marketplace", "make my skill available", "auto-release", or any request to push a skill folder to multiple marketplaces. Generates skill-card.md and bilingual README, strips dot-files and credentials, drafts a release note, optionally invokes /skill-optimizer for description tweaks and /release-skill for version bumps.
+argument-hint: "[--skip-optimizer] [--skip-release-note] [--dry-run]"
 ---
 
 # Skill Publisher
 
-A focused publisher workflow for **Agent Skills** (`SKILL.md`-based). One skill folder in → two marketplaces out: **ClawHub** (`openclaw skills install @mebusw/<slug>`) and **skills.sh** (`npx skills add https://github.com/mebusw/<slug>`).
+A focused publisher workflow for **Agent Skills** (`SKILL.md`-based). 
 
 The skill is opinionated about what "ready to ship" means. It does not just zip and upload — it cleans, validates, documents, and only then hands off to the marketplace tooling. Most users forget at least one of those steps; this skill enforces the checklist.
 
@@ -131,11 +131,12 @@ Format the release note as Markdown with these sections (omit any that are empty
 ## Install
 
 \`\`\`bash
-# ClaudeCode or Codex
+# Install for ClaudeCode or Codex
 npx skills add https://github.com/mebusw/<slug>
-# OpenClaw
+# Install for ClawHub (OpenClaw)
 openclaw skills install @mebusw/<slug>
 \`\`\`
+
 
 ## Full Changelog
 
@@ -202,7 +203,7 @@ The dry-run output is a checklist the user can read in 30 seconds and approve.
 
 Equivalent to `DRY_RUN=true`. Use whichever form fits the calling context.
 
-## `--skip-optimizer` / `--skip-release-skill` flags
+## `--skip-optimizer` / `--skip-release-note` flags
 
 Bypass the optional pre-steps. Useful when the user has already run them manually, or when they want a faster publish.
 
