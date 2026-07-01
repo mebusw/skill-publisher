@@ -1,6 +1,7 @@
 ---
 name: skill-publisher
 description: Publish Agent Skills to clawhub.ai and skills.sh in one workflow. Use when the user wants to release, publish, ship, or distribute a SKILL.md-based skill — even if they don't say "publisher" explicitly. Triggers on phrases like "publish my skill", "release to clawhub", "submit to skills.sh", "发布skill", "上传skill", "上架skill", "ship to marketplace", "make my skill available", "auto-release", or any request to push a skill folder to multiple marketplaces. Generates skill-card.md and bilingual README, strips dot-files and credentials, drafts a release note, optionally invokes /skill-optimizer for description tweaks and /release-skill for version bumps, then drives `openclaw skills install @mebusw/<slug>` and `npx skills add https://github.com/mebusw/<slug>` end to end.
+skill-hint: "[--skip-optimizer] [--skip-release-skill] [--dry-run]"
 ---
 
 # Skill Publisher
@@ -130,7 +131,9 @@ Format the release note as Markdown with these sections (omit any that are empty
 ## Install
 
 \`\`\`bash
+# ClaudeCode or Codex
 npx skills add https://github.com/mebusw/<slug>
+# OpenClaw
 openclaw skills install @mebusw/<slug>
 \`\`\`
 
@@ -141,9 +144,10 @@ openclaw skills install @mebusw/<slug>
 
 Save the release note to `RELEASE_NOTES.md` at the root of the skill folder. This file ships with the bundle.
 
-### Step 6 — Clean the bundle
+### Step 6 — Duplicate to release folder with a cleaned bundle
 
-ClawHub only accepts text-based files (defined by the extension allowlist — see `references/clawhub-bundle.md`). Before bundling, walk `SKILL_DIR` and remove or exclude:
+ClawHub only accepts text-based files (defined by the extension allowlist — see `references/clawhub-bundle.md`). So you must duplicate the whole skill folder first to `~/Downloads` folder in case not accidentally removed credential in use.
+Then, go to the dulicated folder, walk `SKILL_DIR` and remove or exclude:
 
 **Always remove (these are not part of the skill):**
 
@@ -164,51 +168,16 @@ Print a list of every removed file before proceeding. If a removed file is suspi
 
 Use `scripts/strip_bundle.py <skill-dir>` to do this mechanically — it logs each removal and exits non-zero if it had to delete anything that looked like a credential, so the user can review.
 
-### Step 7 — Publish to ClawHub
 
-The publish command for ClawHub is:
 
-```bash
-openclaw skills install @mebusw/<slug>
-```
-
-If `openclaw` is not installed locally, install it first via `npm i -g openclaw` (or the platform-specific equivalent). If the user is on a machine without npm, point them to the manual upload UI on https://clawhub.ai.
-
-Before running the install, do a dry-run that:
-
-1. Shows the cleaned bundle contents (`tree SKILL_DIR` or equivalent).
-2. Shows the file count and total size. Fail if the size exceeds 50MB.
-3. Asks the user to confirm with **yes / no**.
-
-After confirmation, run the install command. Capture stdout + stderr. If the command exits non-zero, stop — do not proceed to skills.sh.
-
-### Step 8 — Publish to skills.sh
-
-skills.sh uses a one-shot npm command:
-
-```bash
-npx skills add https://github.com/mebusw/<slug>
-```
-
-This requires:
-
-- The skill repo pushed to `github.com/mebusw/<slug>` on the `main` branch.
-- `npx` available on the user's machine.
-- Network access to npm registry and github.com.
-
-If the repo is not yet pushed, push it first (`git push origin main --tags`). If `npx` is not available, tell the user.
-
-Like Step 7, do a dry-run that shows the exact command, then ask for confirmation.
-
-### Step 9 — Confirm and report
+### Step 8 — Confirm and report
 
 After both publishes complete, print a summary:
 
 ```
-✓ Published to ClawHub   — https://clawhub.ai/mebusw/skills/<slug>
-✓ Published to skills.sh  — https://skills.sh/mebusw/<slug>
 ✓ GitHub repo             — https://github.com/mebusw/<slug>
 ✓ Release tag             — v<VERSION>
+✓ Bundle location         — <BUNDLE_LOCATION>
 ✓ Bundle size             — <SIZE> (<FILE_COUNT> files)
 ✓ Files removed           — <COUNT> (listed above)
 ```
@@ -223,7 +192,7 @@ If `DRY_RUN=true`, run all nine steps except:
 
 - Do not modify any files (Step 4: just report what would be created or refreshed).
 - Do not delete anything (Step 6: just list what would be removed).
-- Do not execute `openclaw skills install` or `npx skills add` (Steps 7 and 8: just print the commands).
+- Do not execute `openclaw skills install` or `npx skills add`.
 
 The dry-run output is a checklist the user can read in 30 seconds and approve.
 
