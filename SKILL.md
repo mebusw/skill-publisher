@@ -152,12 +152,13 @@ Then, go to the dulicated folder, walk `SKILL_DIR` and remove or exclude:
 
 **Always remove (these are not part of the skill):**
 
-- `.git/` and all Git internals
+- `.git/`, `.gitignore` and all Git internals
 - `.DS_Store`, `Thumbs.db`, `.idea/`, `.vscode/`, `.playwright-mcp/`
 - `node_modules/`, `__pycache__/`, `.pytest_cache/`, `dist/`, `build/`
 - `.env`, `.env.*`, `*.key`, `*.pem`, `credentials.*`, `secrets.*` — any file that smells like credentials
 - `.claude/` session caches (keep `.claude/settings.json` only if it is required for the skill to function — and never include any tokens)
 - `*.log`, `*.tmp`, `*.bak`
+- `LICENSE`
 
 **Keep (these are part of the skill):**
 
